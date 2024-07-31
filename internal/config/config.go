@@ -21,11 +21,10 @@ type GRPCConfig struct {
 
 func MustLoad() *Config {
 
-	// path := fetchConfigPath()
-	// if path == "" {
-	// 	panic("config path is empty")
-	// }
-	path := "/home/tikhonov/go/grpc/gRPC_nmap/config/local_cfg.yaml"
+	path := fetchConfigPath()
+	if path == "" {
+		panic("config path is empty")
+	}
 	return MustLoadByPath(path)
 }
 
