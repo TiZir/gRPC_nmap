@@ -50,6 +50,11 @@ func (s *Service) CheckVuln(ctx context.Context, req *netvuln_v1.CheckVulnReques
 		return nil, status.Error(codes.InvalidArgument, "targets are required")
 	}
 	ports := req.GetTcpPort()
+	// for _, port := range ports {
+	// 	if port < 1 || port > 65535 {
+	// 		return nil, status.Error(codes.InvalidArgument, "tcp port are required")
+	// 	}
+	// }
 	if len(ports) == 0 {
 		return nil, status.Error(codes.InvalidArgument, "tcp port are required")
 	}
@@ -73,7 +78,7 @@ func (s *Service) HandlerScan(ctx context.Context, targets []string, ports []int
 	s.logger.Info("starting Scan")
 	hosts, err := s.scanServer.Scan(ctx, targets, ports)
 	if err != nil {
-		log.Error("scanner cannot be created or started: " + err.Error())
+		log.Error(fmt.Sprintf("%s: %s", "scanner cannot be created or started: ", err.Error()))
 		return nil, fmt.Errorf("%s: %w", op, ErrScanner)
 	}
 	results := make([]*netvuln_v1.TargetResult, 0)
@@ -93,7 +98,7 @@ func (s *Service) HandlerScan(ctx context.Context, targets []string, ports []int
 					for _, row := range table.Tables {
 						id, cvssScore, err := s.scanServer.GetVulnerabilityData(&row)
 						if err != nil {
-							log.Warn("cannot parse cvss: " + err.Error())
+							log.Warn(fmt.Sprintf("%s: %s", "cannot parse cvss: ", err.Error()))
 							continue
 						}
 						vulnerability := &netvuln_v1.Vulnerability{
