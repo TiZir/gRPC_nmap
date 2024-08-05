@@ -12,7 +12,7 @@ go:
 	go run cmd/nmap/main.go --config=./config/local_cfg.yaml
 
 generate:
-	protoc -I proto proto/netvuln.proto --go_out=proto/gen --go_opt=paths=source_relative --go-grpc_out=proto/gen --go-grpc_opt=paths=source_relative
+	protoc -I api api/netvuln.proto --go_out=pkg/gen --go_opt=paths=source_relative --go-grpc_out=pkg/gen --go-grpc_opt=paths=source_relative
 
 tests:
 	go test -v -timeout 60m ./tests

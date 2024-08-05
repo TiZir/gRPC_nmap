@@ -5,7 +5,7 @@ syntax = "proto3";
 package netvuln;
 
 // Настройки для генерации Go кода.
-option go_package = "./proto;netvuln_v1";
+option go_package = "./pkg;netvuln_v1";
 
 service NetVulnService {
     rpc CheckVuln(CheckVulnRequest) returns (CheckVulnResponse);

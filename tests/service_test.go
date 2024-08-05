@@ -3,7 +3,8 @@ package tests
 import (
 	"testing"
 
-	netvuln_v1 "github.com/TiZir/gRPC_nmap/proto/gen"
+	netvuln_v1 "github.com/TiZir/gRPC_nmap/pkg/gen"
+	"github.com/TiZir/gRPC_nmap/tests/mocks"
 	"github.com/TiZir/gRPC_nmap/tests/suite"
 	"github.com/stretchr/testify/require"
 )
@@ -11,9 +12,14 @@ import (
 func TestCheckVuln_AdditionalCases(t *testing.T) {
 	ctx, st := suite.New(t)
 
+	mockService := new(mocks.MockService)
+	st.Service = mockService
+
 	tests := []struct {
 		name        string
 		req         *netvuln_v1.CheckVulnRequest
+		mockResp    *netvuln_v1.CheckVulnResponse
+		mockErr     error
 		expectedErr string
 	}{
 		{
@@ -22,6 +28,8 @@ func TestCheckVuln_AdditionalCases(t *testing.T) {
 				Targets: []string{"scanme.nmap.org"},
 				TcpPort: []int32{22, 80},
 			},
+			mockResp: mockService.GetData(),
+			mockErr:  nil,
 		},
 		{
 			name: "Multiple Targets",
@@ -29,6 +37,8 @@ func TestCheckVuln_AdditionalCases(t *testing.T) {
 				Targets: []string{"scanme.nmap.org", "google.com"},
 				TcpPort: []int32{22, 80},
 			},
+			mockResp: mockService.GetData(),
+			mockErr:  nil,
 		},
 		{
 			name: "Single Port",
@@ -36,6 +46,8 @@ func TestCheckVuln_AdditionalCases(t *testing.T) {
 				Targets: []string{"scanme.nmap.org"},
 				TcpPort: []int32{22},
 			},
+			mockResp: mockService.GetData(),
+			mockErr:  nil,
 		},
 		{
 			name: "Multiple Ports",
@@ -43,6 +55,8 @@ func TestCheckVuln_AdditionalCases(t *testing.T) {
 				Targets: []string{"scanme.nmap.org"},
 				TcpPort: []int32{22, 80, 443},
 			},
+			mockResp: mockService.GetData(),
+			mockErr:  nil,
 		},
 		{
 			name: "Valid Port Range",
@@ -50,14 +64,21 @@ func TestCheckVuln_AdditionalCases(t *testing.T) {
 				Targets: []string{"scanme.nmap.org"},
 				TcpPort: []int32{1, 65535},
 			},
+			mockResp: mockService.GetData(),
+			mockErr:  nil,
 		},
 	}
-
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Устанавливаем ожидания мока
+			mockService.On("CheckVuln", ctx, tt.req).Return(tt.mockResp, tt.mockErr)
+
 			req, err := st.Service.CheckVuln(ctx, tt.req)
 			require.NoError(t, err)
 			require.NotEmpty(t, req)
+
+			// Проверяем, что метод был вызван с ожидаемыми аргументами
+			mockService.AssertCalled(t, "CheckVuln", ctx, tt.req)
 		})
 	}
 }

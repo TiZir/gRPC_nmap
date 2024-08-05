@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/TiZir/gRPC_nmap/internal/config"
-	netvuln_v1 "github.com/TiZir/gRPC_nmap/proto/gen"
+	netvuln_v1 "github.com/TiZir/gRPC_nmap/pkg/gen"
 )
 
 const (

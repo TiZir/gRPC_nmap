@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	netvuln_v1 "github.com/TiZir/gRPC_nmap/proto/gen"
+	netvuln_v1 "github.com/TiZir/gRPC_nmap/pkg/gen"
 	"github.com/Ullaakut/nmap/v3"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
